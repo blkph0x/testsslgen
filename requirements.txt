@@ -1,0 +1,4 @@
+pandas
+docx
+python-docx
+docxtpl
