@@ -20,9 +20,9 @@ Options:
 
 
 # Example:
-1. ./massl.sh listOfDomains.txt
-2. cd testSSLresults
-3. copy the last word file over to host.
+1. ./massl.sh listOfDomains.txt | ./massl.sh domain.com | ./massl.sh 192.168.0.1 | ./massl.sh -o domainResults google.com 
+2. cd testSSLresults or whatever directory you specified with -o
+3. copy the last word file over to host. (at the moment it makes 3, will fix that soon)
 
 
 # Common issues
