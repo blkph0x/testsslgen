@@ -17,3 +17,7 @@ Options:
 
 Example:
   ./Massl.sh domain.txt
+
+# Common issues
+  
+  
