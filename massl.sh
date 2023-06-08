@@ -10,7 +10,7 @@ show_help() {
   echo "  -h, --help:         Display this help message and exit"
   echo "  -m, --max-processes:  Set the maximum number of concurrent scans (default: 5)"
   echo "                      Note: Too many concurrent scans will affect performance"
-  echo "  -o, --output-dir:   Set the output directory for testssl results (default: ./results)"
+  echo "  -o, --output-dir:   Set the output directory for testssl results (default: ./testSSLresults)"
   echo
   echo "Example 1: Using a file containing URLs"
   echo "  ./Massl.sh domain.txt"
