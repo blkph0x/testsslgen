@@ -8,7 +8,7 @@
 
 
 # Usage:
-  1. ./massl.sh options input_file | url | ip_range
+  1. ./massl.sh options input_file | url | ip
       - Specify either a file path containing a list of URLs or a single URL
       - Make sure there is no HTTP or HTTPS prefix in the domain list.
       - Make sure the template.docx and script.py is in the same directory as this bash script.
