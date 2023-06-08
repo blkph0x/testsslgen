@@ -194,12 +194,14 @@ def testCertificateIssues(certificateResults, hostname):
         #testCertURL = ['azure.com', 'b']
         #testHost = 'rds.coalservices.com.au'
 
-        #way algorithm works:
-        # checks if hostname is in exactly in cert_subjectAltName, if match, return 'no'
+        # way algorithm works:
+        # checks if hostname is in exactly in cert_subjectAltName and there is no hostname with wild (as in *.example.com), if match, return 'no'
         # if not match, test to see if host in cert_subjectAltName with *. removed (ie if example.com is in *.example.com), if match return yes
         # if else, return N/A
 
-        if hostname in certificateURL_array:
+        hostnamewithwild = '*.' + hostname
+
+        if hostname in certificateURL_array and hostnamewithwild not in certificateURL_array:
             #print(' NO: ' + hostname + ', cert urls: '+ str(certificateURL_array))
             return 'No'
         else:
@@ -210,7 +212,7 @@ def testCertificateIssues(certificateResults, hostname):
                     return 'Yes'
         
         return 'N/A'
-        #print(' N/A: ' + hostname + ', cert urls: '+ str(certificateURL_array))
+        print(' N/A: ' + hostname + ', cert urls: '+ str(certificateURL_array))
 
     certificateFindings = {
         'Wildcard': '',
@@ -263,21 +265,20 @@ def testCertificateIssues(certificateResults, hostname):
                 certificateFindings.update(CAA = 'YesYes2')
     return certificateFindings
 
-
-
+# Read multiple JSON files passed as command line arguments
 json_files = sys.argv[1:]
 
-    #establishes the dictionaries to store each set of results
 protocolDictionary = {}
 cipherDictionary = {}
 misconfigDictionary = {}
 certificateDictionary = {}
-    
+
 # Process each JSON file
 for file in json_files:
     with open(file) as json_data:
         argumentData = json.load(json_data)
         scanResult = argumentData['scanResult']
+
 
     #iterates through each host
     for j in range(len(scanResult)):
