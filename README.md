@@ -1,9 +1,9 @@
-# Install
+# Install:
 1. git clone https://github.com/troutman5/testsslgen.git
 2. sudo pip3 install -r requirements
 3. sudo apt install testssl
 
-Usage:
+# Usage:
   ./massl.sh <options> <input file>
   Specify the file path to the in-scope domain list
   Make sure there is no HTTP or HTTPS prefix
