@@ -1,7 +1,8 @@
 # Install:
 1. git clone https://github.com/troutman5/testsslgen.git
-2. sudo pip3 install -r requirements
-3. sudo apt install testssl
+2. cd testsslgen
+3. sudo pip3 install -r requirements
+4. sudo apt install testssl
 
 
 # Usage:
@@ -19,7 +20,7 @@ Options:
 # Example:
 1. ./massl.sh listOfDomains.txt
 2. cd testSSLresults
-3. copy the last word file over
+3. copy the last word file over to host.
 
 
 # Common issues
