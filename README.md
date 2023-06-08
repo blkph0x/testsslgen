@@ -31,6 +31,5 @@ Options:
   2. Secure renegotation sometimes fails if cloudflare is used. Easier to use openSSL to do a quick verification.
       -  openssl s_client -no_tls1_3 -status -connect domain:port | grep -i "secure renegotiation"
 3. Python script is generating three documents, i've done something weird with the loop. Will fix soon.
-4. Wildcard checks not working correctly, i've done something weird with the check. Will fix soon.
   
   
