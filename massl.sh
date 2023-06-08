@@ -2,24 +2,25 @@
 
 # Function to display the help message
 show_help() {
-  echo "Usage: $0 <input_file | url | ip_range>"
-  echo "  Specify either a file path containing a list of URLs, a single URL, or an IP range"
-  echo "  If providing a file, make sure there is no HTTP or HTTPS prefix in the URLs"
+  echo "Usage: $0 <options> <inputlist> <url> <ip address>"
+  echo "  Specify either a file path containing a list of URLs, a single URL, or an IP address"
+  echo "  Make sure there is no HTTP or HTTPS prefix for URLs"
+  echo "  Make sure the template.docx and testssl.py files are in the same directory as this bash script"
   echo
   echo "Options:"
   echo "  -h, --help:         Display this help message and exit"
-  echo "  -m, --max-processes:  Set the maximum number of concurrent scans (default: 5)"
+  echo "  -m, --max-scans:    Set the maximum number of concurrent scans (default: 5)"
   echo "                      Note: Too many concurrent scans will affect performance"
   echo "  -o, --output-dir:   Set the output directory for testssl results (default: ./testSSLresults)"
   echo
-  echo "Example 1: Using a file containing URLs"
+  echo "Example:"
   echo "  ./Massl.sh domain.txt"
   echo
   echo "Example 2: Using a single URL"
-  echo '  ./Massl.sh "https://example.com"'
+  echo "  ./Massl.sh example.com"
   echo
-  echo "Example 3: Using an IP range"
-  echo '  ./Massl.sh 192.168.0.1/24'
+  echo "Example 2: Using a single URL"
+  echo "  ./Massl.sh 192.168.0.1"
   exit 0
 }
 
@@ -34,10 +35,11 @@ cleanup() {
 # Register the cleanup function to handle SIGINT
 trap cleanup SIGINT
 
-# Default values
+# Default values if not specified on CLI
 max_processes=5
 output_dir="./testSSLresults"
-# Load the python script wherever this bash script is
+
+# Load the python script from the same directory as this bash script
 python_script_path="$(pwd)"
 
 # Process command line arguments
@@ -62,61 +64,29 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-# Check if the input is provided as an argument or user requested help
+# Check if the input is provided as an argument or show help
 if [[ -z "$1" || "$1" == "--help" ]]; then
   show_help
 fi
 
+# Whatever user inputs, store it in the "input" variable
 input=$1
 
-# Create the output directory if it doesn't exist
+# Make the output directory
 mkdir -p "$output_dir"
 
-# Check if the input is an IP range
-if [[ "$input" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}/[0-9]{1,2}$ ]]; then
-  # Split the IP range into IP address and subnet
-  ip="${input%/*}"
-  subnet="${input#*/}"
-
-  # Calculate the number of IP addresses in the subnet
-  num_addresses=$((2 ** (32 - subnet)))
-
-  # Convert the IP address to a 32-bit integer
-  IFS='.' read -r -a ip_parts <<< "$ip"
-  ip_int=$(( (ip_parts[0] << 24) + (ip_parts[1] << 16) + (ip_parts[2] << 8) + ip_parts[3] ))
-
-  # Generate the list of IP addresses
-  echo "Generating List of IPs"
-  ips=()
-  for ((i = 0; i < num_addresses; i++)); do
-    # Convert the 32-bit integer back to IP address
-    ip_address="$(( (ip_int & 0xFF000000) >> 24 )).$(( (ip_int & 0x00FF0000) >> 16 )).$(( (ip_int & 0x0000FF00) >> 8 )).$(( ip_int & 0x000000FF ))"
-    ips+=("$ip_address")
-
-    # Increment the IP address for the next iteration
-    ((ip_int++))
-  done
-else
-  # Read the input file or treat the input as a single URL
-  if [[ -f "$input" ]]; then
-    # Input is a file
-    urls_file="$input"
-    
-  else
-    # Input is a single URL
-    urls=("$input")
-  fi
-fi
+# Counter for tracking the number of running processes
+running_processes=0
 
 # Function to process a URL
 process_url() {
   local url=$1
 
   # Process a URL in the background
-  testssl --warnings off --jsonfile-pretty ${output_dir} "$url" >/dev/null 2>> "$output_dir/error.txt"
-
-  # Print the scanned URL
-  #echo "Scanning: $url"
+  testssl --warnings off --jsonfile-pretty ${output_dir} ${url} >/dev/null 2>> ./error.txt &
+  echo "Scanning: ${url}"
+  # Increment the running process counter
+  ((running_processes++))
 }
 
 # Function to process an IP address
@@ -124,56 +94,53 @@ process_ip() {
   local ip_address=$1
 
   # Process an IP address in the background
-  testssl --warnings off --jsonfile-pretty ${output_dir}  "$ip_address" >/dev/null 2>> "$output_dir/error.txt"
-
-  # Print the scanned IP address
-  echo "Scanning IP: $ip_address"
+  testssl --warnings off --jsonfile-pretty ${output_dir} ${ip_address} >/dev/null 2>> ./error.txt &
+  echo "Scanning IP: ${ip_address}"
+  # Increment the running process counter
+  ((running_processes++))
 }
 
-# Counter for tracking the number of running processes
-running_processes=0
+# Process the input based on its type
+if [[ -f "$input" ]]; then
+  # Input is a file, read URLs/IPs from the file
+  mapfile -t urls_ips < "$input"
+  total="${#urls_ips[@]}"
 
-# to determine how many hosts left in the list
-counter=0
+  # Loop through the URLs/IPs and process them
+  for url_ip in "${urls_ips[@]}"; do
+    # Check if it's a URL or IP address
+    if [[ $url_ip == *.* ]]; then
+      process_url "$url_ip"
+    else
+      process_ip "$url_ip"
+    fi
 
-# Loop through the URLs or IP addresses and process them
-if [[ -n "${urls_file}" ]]; then
-  # Read URLs from a file
-  while IFS= read -r url; do
-      # Wait until the number of running processes is less than the maximum
-    while ((running_processes >= max_processes)); do
-      sleep 1
-    done
+    # Check if the maximum number of processes has been reached
+    if (( running_processes >= max_processes )); then
+      # Wait for any background process to finish
+      wait -n
 
-    process_url "$url" &
-    echo "Scanning $url"
-    ((running_processes++))
-  done < "$urls_file"
-elif [[ ${#ips[@]} -gt 0 ]]; then
-  # Process IP addresses
-  for ip_address in "${ips[@]}"; do
-    # Wait until the number of running processes is less than the maximum
-    while ((running_processes >= max_processes)); do
-      sleep 1
-    done
-
-    process_ip "$ip_address" &
-    echo "scannin: $ip_address"
-    ((running_processes++))
+      # Decrement the running process counter
+      ((running_processes--))
+    fi
   done
 else
-  # Process a single URL
-  process_url "$input" &
-  ((running_processes++))
+  # Input is a single URL or IP address
+  if [[ $input == *.* ]]; then
+    process_url "$input"
+  else
+    process_ip "$input"
+  fi
 fi
-
-echo "Scanning: $input"
 
 # Wait for all remaining background processes to finish
 wait
 
-# Call the Python script with the output directory as an argument
+echo ""
+echo "Finished Scanning, now generating the template"
+# Now use the python program to create a template
 python "$python_script_path/testsslgen.py" ${output_dir}/*.json
 
 # Print "Finished!" message
+echo ""
 echo "Finished!"
