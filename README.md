@@ -10,16 +10,16 @@
   Make sure the template.docx and script.py is in the same directory as this bash script
 
 Options:
-  -h, --help:         Display this help message and exit
-  -m, --max-scans:    Set the maximum number of concurrent scans (default: 5)
-                      Note: Too many concurrent scans will effect performance
-  -o, --output-dir:   Set the output directory for testssl results (default: ./testSSLresults)
+  1. -h, --help:         Display this help message and exit
+  2. -m, --max-scans:    Set the maximum number of concurrent scans (default: 5)
+    - Note: Too many concurrent scans will effect performance
+  3. -o, --output-dir:   Set the output directory for testssl results (default: ./testSSLresults)
 
 Example:
   ./Massl.sh domain.txt
 
 # Common issues
-  1. if you see err, that means the specific test didn't work. Feel free to run testssl for just that domain again
+  1. if you see err, that means the specific test didn't work. Feel free to run testssl for just that domain again. Just make sure you delete the old JSON for that domain.
       -  testssl --json-pretty <domain>
   2. Secure renegotation sometimes fails if cloudflare is used. Easier to use openSSL to do a quick verification
       -  openssl s_client -no_tls1_3 -status -connect domain:port | grep -i "secure renegotiation"
