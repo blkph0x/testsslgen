@@ -20,7 +20,7 @@ Example:
 
 # Common issues
   1. if you see err, that means the specific test didn't work. Feel free to run testssl for just that domain again
-    -  testssl --json-pretty <domain>
+      -  testssl --json-pretty <domain>
   2. Secure renegotation sometimes fails if cloudflare is used. Easier to use openSSL to do a quick verification
     -  openssl s_client -no_tls1_3 -status -connect domain:port | grep -i "secure renegotiation"
   
