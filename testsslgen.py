@@ -242,9 +242,9 @@ def testCertificateIssues(certificateResults, hostname):
             for element in finding.split():
                 if re.match(url_pattern, element): 
                     #print('true')
-                    certificateFindings.update(CRL = 'Yes')
+                    certificateFindings.update(CRL = 'No')
 
-                certificateFindings.update(CRL = 'No')
+                certificateFindings.update(CRL = 'Yes')
 
         elif 'OCSP_stapling' in certificateId:
             if finding == 'not offered':
@@ -388,9 +388,9 @@ for file in json_files:
         'pro_tbl_contents': [],
         'cip_col_labels': ['Null Ciphers', 'Anonymous Ciphers', 'RC4 Ciphers', 'Triple DES', 'CBC ciphers'],
         'cip_tbl_contents' :[],
-        'mis_col_labels': ['Client-initiated renegotiation is supported', 'Secure renegotiation  supported', 'TLS Fallback SCSV supported', 'Perfect Forward Secrecy (PFS) '],
+        'mis_col_labels': ['Client-initiated renegotiation is supported', 'Secure renegotiation is supported', 'TLS Fallback SCSV supported', 'Perfect Forward Secrecy (PFS) '],
         'mis_tbl_contents' :[],
-        'cert_col_labels': ['Wildcard or Shared Certificates', 'No CRL enabled', 'No OCSP enabled', 'OCSP must staple not enabled', 'CAA record not defined'],
+        'cert_col_labels': ['Wildcard or Shared Certificates', 'CRL enabled', 'OCSP enabled', 'OCSP must staple enabled', 'CAA record defined'],
         'cert_tbl_contents': []
     }
 
@@ -476,25 +476,25 @@ for file in json_files:
                         set_colour(cell, 'orange')
                     elif cell.text =='No':
                         set_colour(cell, 'green')
-            elif column_heading == 'No CRL enabled':
+            elif column_heading == 'CRL enabled':
                 for cell in table_column.cells:
                     if cell.text == 'Yes':
                         set_colour(cell, 'green')
                     elif cell.text =='No':
                         set_colour(cell, 'orange')
-            elif column_heading == 'No OCSP enabled':
+            elif column_heading == 'OCSP enabled':
                 for cell in table_column.cells:
                     if cell.text == 'No':
                         set_colour(cell, 'orange')
                     elif cell.text =='Yes':
                         set_colour(cell, 'green')
-            elif column_heading == 'OCSP must staple not enabled':
+            elif column_heading == 'OCSP must staple enabled':
                 for cell in table_column.cells:
                     if cell.text == 'No':
                         set_colour(cell, 'orange')
                     elif cell.text =='Yes':
                         set_colour(cell, 'green')
-            elif column_heading == 'CAA record not defined':
+            elif column_heading == 'CAA record defined':
                 for cell in table_column.cells:
                     if cell.text == 'No':
                         set_colour(cell, 'orange')
@@ -591,7 +591,7 @@ for file in json_files:
                         set_colour(cell, 'orange')
                     elif cell.text =='No':
                         set_colour(cell, 'green')
-            elif column_heading == 'Secure renegotiation  supported':
+            elif column_heading == 'Secure renegotiation is supported':
                 for cell in table_column.cells:
                     if cell.text == 'Yes':
                         set_colour(cell, 'green')
@@ -613,7 +613,3 @@ for file in json_files:
   
     #saves document
     tpl.save(sys.argv[1] + ' - ' + dateTime + '.docx')
-
-    
-
-    
