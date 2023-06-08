@@ -19,5 +19,9 @@ Example:
   ./Massl.sh domain.txt
 
 # Common issues
+  1. if you see err, that means the specific test didn't work
+  2. Secure renegotation sometimes fails if cloudflare is used. Easier to use openSSL to do a quick verification
+    1. openssl s_client -no_tls1_3 -status -connect domain:port | grep -i "secure renegotiation"![image](https://github.com/troutman5/testsslgen/assets/24028482/2abb60d1-6188-4de2-995d-a1b5279e7261)
+
   
   
