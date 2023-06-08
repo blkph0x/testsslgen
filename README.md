@@ -1,8 +1,10 @@
 # Install:
 1. git clone https://github.com/troutman5/testsslgen.git
 2. cd testsslgen
-3. sudo pip3 install -r requirements
-4. sudo apt install testssl
+3. chmod +x testsslgen.py
+4. chmod +x massl.sh
+5. sudo pip3 install -r requirements
+6. sudo apt install testssl
 
 
 # Usage:
