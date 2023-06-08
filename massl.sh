@@ -113,7 +113,7 @@ process_url() {
   local url=$1
 
   # Process a URL in the background
-  testssl --warnings off --json-pretty "$url" >/dev/null 2>> "$output_dir/error.txt"
+  testssl --warnings off --jsonfile-pretty ${output_dir} "$url" >/dev/null 2>> "$output_dir/error.txt"
 
   # Print the scanned URL
   #echo "Scanning: $url"
@@ -124,7 +124,7 @@ process_ip() {
   local ip_address=$1
 
   # Process an IP address in the background
-  testssl --warnings off --json-pretty "$ip_address" >/dev/null 2>> "$output_dir/error.txt"
+  testssl --warnings off --jsonfile-pretty ${output_dir}  "$ip_address" >/dev/null 2>> "$output_dir/error.txt"
 
   # Print the scanned IP address
   echo "Scanning IP: $ip_address"
