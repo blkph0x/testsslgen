@@ -5,9 +5,9 @@
 
 # Usage:
   ./massl.sh <options> <input file>
-  Specify the file path to the in-scope domain list
-  Make sure there is no HTTP or HTTPS prefix
-  Make sure the template.docx and script.py is in the same directory as this bash script
+      - Specify the file path to the in-scope domain list
+      - Make sure there is no HTTP or HTTPS prefix
+      - Make sure the template.docx and script.py is in the same directory as this bash script
 
 Options:
   1. -h, --help:         Display this help message and exit
