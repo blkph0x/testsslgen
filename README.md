@@ -8,8 +8,8 @@
 
 
 # Usage:
-  1. ./massl.sh options input file
-      - Specify the file path to the in-scope domain list
+  1. ./massl.sh options input file or url
+      - Specify either a file path containing a list of URLs or a single URL
       - Make sure there is no HTTP or HTTPS prefix in the domain list.
       - Make sure the template.docx and script.py is in the same directory as this bash script.
 Options:
