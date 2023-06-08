@@ -3,7 +3,7 @@
 # Function to display the help message
 show_help() {
   echo "Usage: $0 <options> <input file>"
-  echo "  Specify the file path to the in-scope domain list"
+  echo "  Specify either a file path containing a list of URLs or a single URL"
   echo "  Make sure there is no HTTP or HTTPS prefix"
   echo "  Make sure the template.docx and testssl.py is in the same directory as this bash script"
   echo
@@ -15,6 +15,9 @@ show_help() {
   echo
   echo "Example:"
   echo "  ./Massl.sh domain.txt"
+  echo 
+  echo "Example 2: Using a single URL"
+  echo '  ./Massl.sh "https://example.com"'
   exit 0
 }
 
@@ -67,7 +70,7 @@ if [[ -z "$1" || "$1" == "--help" ]]; then
 fi
 
 # Whatever user inputs, then add to variable
-input_file=$1
+input=$1
 
 # Make the output directory
 mkdir -p "$output_dir"
@@ -78,9 +81,16 @@ total=$(wc -l < "$1")
 # This will be used to deduct from the total variable so we know how many hosts are left
 counter=0
 
-# Read the input file line by line into an array
-mapfile -t urls < "$input_file"
-
+# Find the total number of hosts
+if [[ -f "$input" ]]; then
+  # Input is a file, read URLs from the file
+  mapfile -t urls < "$input"
+  total="${#urls[@]}"
+else
+  # Input is a single URL
+  urls=("$input")
+  total=1
+fi
 
 
 # Counter for tracking the number of running processes
