@@ -12,7 +12,7 @@
 Options:
   1. -h, --help:         Display this help message and exit
   2. -m, --max-scans:    Set the maximum number of concurrent scans (default: 5)
-    - Note: Too many concurrent scans will effect performance
+      - Note: Too many concurrent scans will effect performance
   3. -o, --output-dir:   Set the output directory for testssl results (default: ./testSSLresults)
 
 Example:
