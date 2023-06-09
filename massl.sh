@@ -2,7 +2,7 @@
 
 # Function to display the help message
 show_help() {
-  echo "Usage: $0 <options> <inputlist> <url> <ip address>"
+  echo "Usage: $0 <options> <inputlist> or <url> or <ip address>"
   echo "  Specify either a file path containing a list of URLs, a single URL, or an IP address"
   echo "  Make sure there is no HTTP or HTTPS prefix for URLs"
   echo "  Make sure the template.docx and testssl.py files are in the same directory as this bash script"
@@ -20,7 +20,7 @@ show_help() {
   echo "  ./Massl.sh example.com"
   echo
   echo "Example 2: Using a single URL"
-  echo "  ./Massl.sh 192.168.0.1"
+  echo "  ./Massl.sh 192.168.0.1 | ./Massl.sh 192.168.0.1:8443"
   exit 0
 }
 
