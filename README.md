@@ -9,7 +9,7 @@
 
 # Usage:
   ```
- Usage: ./massl.sh <options> <inputlist> <url> <ip address>
+ Usage: ./massl.sh <options> <inputlist> or <url> or <ip address>
   Specify either a file path containing a list of URLs/IPS, a single URL, or an IP address
   Make sure there is no HTTP or HTTPS prefix for URLs
   Make sure the template.docx and testssl.py files are in the same directory as this bash script
