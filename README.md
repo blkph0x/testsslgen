@@ -37,7 +37,7 @@ Example 2: Using a single URL
 3. copy the last word file over to host. (at the moment it makes 3, will fix that soon)
 
 # What Happens If I need To Rerun a Test
-1. If you need to rerun a test because the output in the JSON was wonky, or something was missed. Delete that JSON file and rerun massl for just that IP or host and it will complete the test and regenerate the table.
+If you need to rerun a test because the output in the JSON was wonky, or something was missed. Delete that JSON file and rerun massl for just that IP or host and it will complete the test and regenerate the table.
 
 
 # Common issues
