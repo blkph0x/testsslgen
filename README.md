@@ -27,7 +27,7 @@ Example 2: Using a single URL
   ./Massl.sh example.com
 
 Example 2: Using a single URL
-  ./Massl.sh 192.168.0.1
+  ./Massl.sh 192.168.0.1 | ./Massl.sh 192.168.0.1:8443
 
 ```
 
