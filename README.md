@@ -9,7 +9,7 @@
 
 # Usage:
   ```
- Usage: ./masslv3.sh <options> <inputlist> <url> <ip address>
+ Usage: ./massl.sh <options> <inputlist> <url> <ip address>
   Specify either a file path containing a list of URLs/IPS, a single URL, or an IP address
   Make sure there is no HTTP or HTTPS prefix for URLs
   Make sure the template.docx and testssl.py files are in the same directory as this bash script
@@ -36,13 +36,17 @@ Example 2: Using a single URL
 2. cd testSSLresults or whatever directory you specified with -o
 3. copy the last word file over to host. (at the moment it makes 3, will fix that soon)
 
+# What Happens If I need To Rerun a Test
+1. If you need to rerun a test because the output in the JSON was wonky, or something was missed. Delete that JSON file and rerun massl for just that IP or host and it will complete the test and regenerate the table.
+
 
 # Common issues
   1. if you see err, that means the specific test didn't work. Feel free to run testssl for just that domain again. Just make sure you delete the old JSON for that domain.
       -  testssl --json-pretty domain
   2. Secure renegotation sometimes fails if cloudflare is used. Easier to use openSSL to do a quick verification.
       -  openssl s_client -no_tls1_3 -status -connect domain:port | grep -i "secure renegotiation"
-3. Python script is generating three documents, i've done something weird with the loop. Will fix soon.
+  3. Python script is generating three documents, i've done something weird with the loop. Will fix soon.
+  4. If you see N/A in the wildcard or shared certificate column, that means the domain was not in the subjectAltname of the cert and most likely to do with AWS/Azure hosting.
   
   
 # Example output:
