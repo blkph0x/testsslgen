@@ -9,18 +9,29 @@
 
 # Usage:
   ```
-  ./massl.sh <options> <input_file | url | ip>
-      Specify either a file path containing a list of URLs or a single URL
-      Make sure there is no HTTP or HTTPS prefix in the domain list.
-      Make sure the template.docx and script.py is in the same directory as this bash script.
+ Usage: ./masslv3.sh <options> <inputlist> <url> <ip address>
+  Specify either a file path containing a list of URLs/IPS, a single URL, or an IP address
+  Make sure there is no HTTP or HTTPS prefix for URLs
+  Make sure the template.docx and testssl.py files are in the same directory as this bash script
+
 Options:
-   -h, --help:         Display this help message and exit
-   -m, --max-scans:    Set the maximum number of concurrent scans (default: 5)
-      Note: Too many concurrent scans will effect performance
-   -o, --output-dir:   Set the output directory for testssl results (default: ./testSSLresults)
+  -h, --help:         Display this help message and exit
+  -m, --max-scans:    Set the maximum number of concurrent scans (default: 5)
+                      Note: Too many concurrent scans will affect performance
+  -o, --output-dir:   Set the output directory for testssl results (default: ./testSSLresults)
+
+Example:
+  ./Massl.sh domain.txt
+
+Example 2: Using a single URL
+  ./Massl.sh example.com
+
+Example 2: Using a single URL
+  ./Massl.sh 192.168.0.1
+
 ```
 
-# Example:
+# Example Usage :
 1. ./massl.sh listOfDomains.txt | ./massl.sh domain.com | ./massl.sh 192.168.0.1 | ./massl.sh -o domainResults google.com 
 2. cd testSSLresults or whatever directory you specified with -o
 3. copy the last word file over to host. (at the moment it makes 3, will fix that soon)
@@ -34,3 +45,5 @@ Options:
 3. Python script is generating three documents, i've done something weird with the loop. Will fix soon.
   
   
+# Example output:
+![image](https://github.com/troutman5/testsslgen/assets/24028482/bb8199a1-0fbc-4bb8-a5d4-64825da03dd3)
