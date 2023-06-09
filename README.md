@@ -8,16 +8,17 @@
 
 
 # Usage:
-  1. ./massl.sh options input_file | url | ip
-      - Specify either a file path containing a list of URLs or a single URL
-      - Make sure there is no HTTP or HTTPS prefix in the domain list.
-      - Make sure the template.docx and script.py is in the same directory as this bash script.
+  ```
+  ./massl.sh options input_file | url | ip
+      Specify either a file path containing a list of URLs or a single URL
+      Make sure there is no HTTP or HTTPS prefix in the domain list.
+      Make sure the template.docx and script.py is in the same directory as this bash script.
 Options:
-  1. -h, --help:         Display this help message and exit
-  2. -m, --max-scans:    Set the maximum number of concurrent scans (default: 5)
-      - Note: Too many concurrent scans will effect performance
-  3. -o, --output-dir:   Set the output directory for testssl results (default: ./testSSLresults)
-
+   -h, --help:         Display this help message and exit
+   -m, --max-scans:    Set the maximum number of concurrent scans (default: 5)
+      Note: Too many concurrent scans will effect performance
+   -o, --output-dir:   Set the output directory for testssl results (default: ./testSSLresults)
+```
 
 # Example:
 1. ./massl.sh listOfDomains.txt | ./massl.sh domain.com | ./massl.sh 192.168.0.1 | ./massl.sh -o domainResults google.com 
