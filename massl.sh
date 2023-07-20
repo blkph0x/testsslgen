@@ -36,7 +36,7 @@ cleanup() {
 trap cleanup SIGINT
 
 # Default values if not specified on CLI
-max_processes=5
+max_processes=1
 output_dir="./testSSLresults"
 
 # Load the python script from the same directory as this bash script
