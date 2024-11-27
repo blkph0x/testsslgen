@@ -11,7 +11,7 @@ show_help() {
   echo "  -h, --help:         Display this help message and exit"
   echo "  -m, --max-scans:    Set the maximum number of concurrent scans (default: 5)"
   echo "                      Note: Too many concurrent scans will affect performance"
-  echo "  -o, --output-dir:   Set the output directory for testssl results (default: ./testSSLresults)"
+  echo "  -o, --output-dir:   Set the output directory for SSLyze results (default: ./SSLyzeResults)"
   echo
   echo "Example:"
   echo "  ./Massl.sh domain.txt"
@@ -19,14 +19,14 @@ show_help() {
   echo "Example 2: Using a single URL"
   echo "  ./Massl.sh example.com"
   echo
-  echo "Example 2: Using a single URL"
+  echo "Example 3: Using an IP address"
   echo "  ./Massl.sh 192.168.0.1 | ./Massl.sh 192.168.0.1:8443"
   exit 0
 }
 
 # Function to handle the interrupt signal (Ctrl+C)
 cleanup() {
-  echo "Interrupt signal received. Stopping testssl..."
+  echo "Interrupt signal received. Stopping SSLyze..."
   # Terminate all child processes
   pkill -P $$  # Send SIGTERM to all child processes of the current script
   exit 1
@@ -36,10 +36,10 @@ cleanup() {
 trap cleanup SIGINT
 
 # Default values if not specified on CLI
-max_processes=1
-output_dir="./testSSLresults"
+max_processes=5
+output_dir="./SSLyzeResults"
 
-# Load the python script from the same directory as this bash script
+# Load the Python script from the same directory as this bash script
 python_script_path="$(pwd)"
 
 # Process command line arguments
@@ -78,24 +78,13 @@ mkdir -p "$output_dir"
 # Counter for tracking the number of running processes
 running_processes=0
 
-# Function to process a URL
-process_url() {
-  local url=$1
+# Function to process a domain/IP using SSLyze
+process_target() {
+  local target=$1
 
-  # Process a URL in the background
-  testssl --warnings off --jsonfile-pretty ${output_dir} ${url} >/dev/null 2>> ./error.txt &
-  echo "Scanning: ${url}"
-  # Increment the running process counter
-  ((running_processes++))
-}
-
-# Function to process an IP address
-process_ip() {
-  local ip_address=$1
-
-  # Process an IP address in the background
-  testssl --warnings off --jsonfile-pretty ${output_dir} ${ip_address} >/dev/null 2>> ./error.txt &
-  echo "Scanning IP: ${ip_address}"
+  # Process a target in the background
+  sslyze --json_out=${output_dir}/${target//[:\/]/_}.json ${target} >/dev/null 2>> ./error.txt &
+  echo "Scanning: ${target}"
   # Increment the running process counter
   ((running_processes++))
 }
@@ -103,17 +92,12 @@ process_ip() {
 # Process the input based on its type
 if [[ -f "$input" ]]; then
   # Input is a file, read URLs/IPs from the file
-  mapfile -t urls_ips < "$input"
-  total="${#urls_ips[@]}"
+  mapfile -t targets < "$input"
+  total="${#targets[@]}"
 
-  # Loop through the URLs/IPs and process them
-  for url_ip in "${urls_ips[@]}"; do
-    # Check if it's a URL or IP address
-    if [[ $url_ip == *.* ]]; then
-      process_url "$url_ip"
-    else
-      process_ip "$url_ip"
-    fi
+  # Loop through the targets and process them
+  for target in "${targets[@]}"; do
+    process_target "$target"
 
     # Check if the maximum number of processes has been reached
     if (( running_processes >= max_processes )); then
@@ -125,12 +109,8 @@ if [[ -f "$input" ]]; then
     fi
   done
 else
-  # Input is a single URL or IP address
-  if [[ $input == *.* ]]; then
-    process_url "$input"
-  else
-    process_ip "$input"
-  fi
+  # Input is a single target (URL or IP address)
+  process_target "$input"
 fi
 
 # Wait for all remaining background processes to finish
@@ -138,7 +118,7 @@ wait
 
 echo ""
 echo "Finished Scanning, now generating the template"
-# Now use the python program to create a template
+# Now use the Python program to create a template
 python "$python_script_path/testsslgen.py" ${output_dir}/*.json
 
 # Print "Finished!" message
